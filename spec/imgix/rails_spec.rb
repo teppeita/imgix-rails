@@ -52,14 +52,14 @@ describe Imgix::Rails do
 
     it 'expects either a :source or :sources, but not both' do
       Imgix::Rails.configure { |config| config.imgix = { source: "domain1", sources: "domain2" } }
-      
+
       expect{
         helper.ix_image_url("assets.png")
       }.to raise_error(Imgix::Rails::ConfigurationError, "Exactly one of :source, :sources is required")
     end
 
     it 'expects :sources to be a hash' do
-      Imgix::Rails.configure { |config| 
+      Imgix::Rails.configure { |config|
         config.imgix = {
           sources: 1
         }
@@ -358,6 +358,9 @@ describe Imgix::Rails do
           tag_options: {
             class: 'a-picture-tag'
           },
+          img_tag_options: {
+            class: 'a-img-tag'
+          },
           url_params: {
             w: 300,
             h: 300,
@@ -408,6 +411,10 @@ describe Imgix::Rails do
 
       it 'generates a fallback `img` child' do
         expect(tag.css('img').length).to eq(1)
+      end
+
+      it 'passes through options to the `img`' do
+        expect(tag.css('img').attribute('class').value).to eq('a-img-tag')
       end
 
       it 'sets the specified `media` on each `source`' do
@@ -517,7 +524,7 @@ describe Imgix::Rails do
                 }
               }
             )
-    
+
             Nokogiri::HTML.fragment(picture_tag).children[0]
           end
 
@@ -552,7 +559,7 @@ describe Imgix::Rails do
                 }
               }
             )
-    
+
             Nokogiri::HTML.fragment(picture_tag).children[0]
           end
 
@@ -587,7 +594,7 @@ describe Imgix::Rails do
                 }
               }
             )
-    
+
             Nokogiri::HTML.fragment(picture_tag).children[0]
           end
 
